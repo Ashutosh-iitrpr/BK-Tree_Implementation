@@ -96,6 +96,48 @@ void searchBKTree(struct Node *root, char *word, int tolerance, char ***results,
     }
 }
 
+void search_preprocessor(struct Node *root) {
+    char word[100];
+    int tolerance;
+    char **results[15];  // Array of 15 arrays for different distances
+    int result_count[15] = {0};
+
+    printf("Enter the word to search: ");
+    scanf("%s", word);
+
+    printf("Enter the tolerance: ");
+    scanf("%d", &tolerance);
+
+    for (int i = 0; i < 15; i++) {
+        results[i] = (char **)malloc(15 * sizeof(char *));
+    }
+
+    searchBKTree(root, word, tolerance, results, result_count);
+
+    // Return the first non-empty array of results
+    for (int i = 0; i < 15; i++) {
+        if (result_count[i] > 0) {
+            printf("Words within distance %d of '%s':\n", i, word);
+            for (int j = 0; j < result_count[i]; j++) {
+                printf("  %s\n", results[i][j]);
+            }
+            // Free memory after use
+            for (int k = 0; k < 15; k++) {
+                free(results[k]);
+            }
+            return;
+        }
+    }
+
+    printf("No words found within the given tolerance.\n");
+    // Free memory even if no results are found
+    for (int k = 0; k < 15; k++) {
+        free(results[k]);
+    }
+}
+
+
+
 
 
 
@@ -117,30 +159,6 @@ int main() {
 
     depth_traverse(root);
 
-    int tolerance = 2;
-    char **results[15];  // Array of 15 arrays for different distances
-    int result_count[15] = {0};
-
-    for (int i = 0; i < 15; i++) {
-        results[i] = (char **)malloc(15 * sizeof(char *));
-    }
-
-    searchBKTree(root, "hella", tolerance, results, result_count);
-
-    printf("Words within distance %d of 'hella':\n", tolerance);
-    for (int i = 0; i < 15; i++) {
-        if (result_count[i] > 0) {
-            printf("Distance %d:\n", i);
-            for (int j = 0; j < result_count[i]; j++) {
-                printf("  %s\n", results[i][j]);
-            }
-        }
-    }
-
-    // Free memory
-    for (int i = 0; i < 15; i++) {
-        free(results[i]);
-    }
-
-    return 0;
+    search_preprocessor(root);
+    
 }
