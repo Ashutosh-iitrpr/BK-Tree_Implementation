@@ -136,6 +136,20 @@ void search_preprocessor(struct Node *root) {
     }
 }
 
+void autoCompleteBKTree(struct Node *root, const char *prefix, char **results, int *result_count) {
+    if (root == NULL) return;
+
+    // Check if the current word starts with the prefix
+    if (strncmp(root->word, prefix, strlen(prefix)) == 0) {
+        results[*result_count] = root->word;
+        (*result_count)++;
+    }
+
+    // Search in all children
+    for (int i = 0; i < root->numChildren; i++) {
+        autoCompleteBKTree(root->children[i], prefix, results, result_count);
+    }
+}
 
 
 
@@ -156,9 +170,25 @@ int main() {
     insertNode(root, "jellyfisher");
     insertNode(root, "holla");
     insertNode(root, "hella");
+    insertNode(root, "helmet");
+    insertNode(root, "hero");
+    insertNode(root, "herald");
+    insertNode(root, "herb");
 
     depth_traverse(root);
 
-    search_preprocessor(root);
-    
+    //search_preprocessor(root);
+
+
+    char *results[100];
+    int result_count = 0;
+
+    autoCompleteBKTree(root, "jo", results, &result_count);
+
+    printf("Words with prefix '':\n");
+    for (int i = 0; i < result_count; i++) 
+    {
+        printf("  %s\n", results[i]);
+    }   
+
 }
