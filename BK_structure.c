@@ -3,6 +3,7 @@
 //2023CSB1289
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include <stdbool.h>
 #include <string.h>
 #include <limits.h>
@@ -76,10 +77,30 @@ void depth_traverse(struct Node *root)
     printf("%s\n", root->word);
 }
 
+//function for searching a word in BK tree
+void searchBKTree(struct Node *root, char *word, int tolerance, char ***results, int *result_count) {
+    if (root == NULL) return;
+
+    int distance = lev_dist(root->word, word);
+    if (distance <= tolerance) {
+        int index = distance;  // Index based on Levenshtein distance
+        if (result_count[index] < 15) {  // Assuming max 15 results per distance
+            results[index][result_count[index]] = root->word;
+            result_count[index]++;
+        }
+    }
+
+    // Search in the range of distance - tolerance to distance + tolerance subtrees
+    for (int i = fmax(0, distance - tolerance); i <= distance + tolerance && i < root->numChildren; i++) {
+        searchBKTree(root->children[i], word, tolerance, results, result_count);
+    }
+}
 
 
-int main()
-{
+
+
+
+int main() {
     struct Node *root = createBKTree("hello");
     insertNode(root, "world");
     insertNode(root, "hell");
@@ -90,8 +111,36 @@ int main()
     insertNode(root, "jellybeans");
     insertNode(root, "jellyfish");
     insertNode(root, "jellyfishes");
+    insertNode(root, "jellyfisher");
+    insertNode(root, "holla");
+    insertNode(root, "hella");
 
     depth_traverse(root);
-    
+
+    int tolerance = 2;
+    char **results[15];  // Array of 15 arrays for different distances
+    int result_count[15] = {0};
+
+    for (int i = 0; i < 15; i++) {
+        results[i] = (char **)malloc(15 * sizeof(char *));
+    }
+
+    searchBKTree(root, "hella", tolerance, results, result_count);
+
+    printf("Words within distance %d of 'hella':\n", tolerance);
+    for (int i = 0; i < 15; i++) {
+        if (result_count[i] > 0) {
+            printf("Distance %d:\n", i);
+            for (int j = 0; j < result_count[i]; j++) {
+                printf("  %s\n", results[i][j]);
+            }
+        }
+    }
+
+    // Free memory
+    for (int i = 0; i < 15; i++) {
+        free(results[i]);
+    }
+
     return 0;
 }
