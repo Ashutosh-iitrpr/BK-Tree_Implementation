@@ -1,6 +1,6 @@
-#include "header.h"
 //Ashutosh Rajput
 //2023CSB1289
+#include "header.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -157,27 +157,29 @@ void autoCompleteBKTree(struct Node *root, const char *prefix, char **results, i
 
 
 int main() {
-    struct Node *root = createBKTree("hello");
-    insertNode(root, "world");
-    insertNode(root, "hell");
-    insertNode(root, "help");
-    insertNode(root, "jello");
-    insertNode(root, "jelly");
-    insertNode(root, "jellybean");
-    insertNode(root, "jellybeans");
-    insertNode(root, "jellyfish");
-    insertNode(root, "jellyfishes");
-    insertNode(root, "jellyfisher");
-    insertNode(root, "holla");
-    insertNode(root, "hella");
-    insertNode(root, "helmet");
-    insertNode(root, "hero");
-    insertNode(root, "herald");
-    insertNode(root, "herb");
+    // struct Node *root = createBKTree("hello");
+    // insertNode(root, "world");
+    // insertNode(root, "hell");
+    // insertNode(root, "help");
+    // insertNode(root, "jello");
+    // insertNode(root, "jelly");
+    // insertNode(root, "jellybean");
+    // insertNode(root, "jellybeans");
+    // insertNode(root, "jellyfish");
+    // insertNode(root, "jellyfishes");
+    // insertNode(root, "jellyfisher");
+    // insertNode(root, "holla");
+    // insertNode(root, "hella");
+    // insertNode(root, "helmet");
+    // insertNode(root, "hero");
+    // insertNode(root, "herald");
+    // insertNode(root, "herb");
 
-    depth_traverse(root);
+    struct Node *root = dic_loader("dictionary.txt");
+    
+    //depth_traverse(root);
 
-    //search_preprocessor(root);
+    search_preprocessor(root);
 
 
     char *results[100];
