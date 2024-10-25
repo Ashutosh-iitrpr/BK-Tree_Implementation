@@ -73,6 +73,11 @@ int UK_lev_dist(char* a, char* b) {
             f[i][abs(k)] = -1;
         }
     }
+    int result = edit_dist(f, a, b);
+    for(int i = 0; i < diagonals; i++) {
+        free(f[i]);
+    }
+    free(f);
 
-    return edit_dist(f, a, b);
+    return result;
 }
