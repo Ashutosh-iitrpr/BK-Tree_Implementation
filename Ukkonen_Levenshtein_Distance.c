@@ -22,7 +22,7 @@ void evaluate(int** f, char* a, char* b, int k, int p) {
     if(k2 > 0) t = MAX(t, f[k2-1][p2-1]);
     if(k2 < m+n) t = MAX(t, f[k2+1][p2-1] + 1);
 
-    while(t < m && t+k < n && a[t] == b[t+k]) t++;
+    while(t < m && t+k < n && t > 0 && t+k > 0 && a[t] == b[t+k]) t++;
     if(t > m || t+k > n) f[k2][p2] = NEG_INF;
     else f[k2][p2] = t;
 
