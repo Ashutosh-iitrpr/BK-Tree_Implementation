@@ -51,7 +51,7 @@ void insertNode(struct Node *root,  char *word)
     int distance = 0;
     while(currentNode != NULL)
     {
-        distance = lev_dist(currentNode->word, word);
+        distance = UK_lev_dist(currentNode->word, word);
         if(currentNode->children[distance] == NULL)
         {
             currentNode->children[distance] = createNode(word);
@@ -81,7 +81,7 @@ void depth_traverse(struct Node *root)
 void searchBKTree(struct Node *root, char *word, int tolerance, char ***results, int *result_count) {
     if (root == NULL) return;
 
-    int distance = lev_dist(root->word, word);
+    int distance = UK_lev_dist(root->word, word);
     if (distance <= tolerance) {
         int index = distance;  // Index based on Levenshtein distance
         if (result_count[index] < 15) {  // Assuming max 15 results per distance
