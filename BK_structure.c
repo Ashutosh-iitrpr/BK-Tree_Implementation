@@ -136,13 +136,14 @@ void search_preprocessor(struct Node *root) {
     }
 }
 
-void autoCompleteBKTree(struct Node *root, const char *prefix, char **results, int *result_count) {
+void autoCompleteBKTree(struct Node *root, const char *prefix, char ***results, int *result_count) {
     if (root == NULL) return;
 
     // Check if the current word starts with the prefix
     if (strncmp(root->word, prefix, strlen(prefix)) == 0) {
-        results[*result_count] = root->word;
         (*result_count)++;
+        *results = (char **)realloc(*results, (*result_count) * sizeof(char *));
+        (*results)[(*result_count) - 1] = strdup(root->word);
     }
 
     // Search in all children
@@ -152,28 +153,39 @@ void autoCompleteBKTree(struct Node *root, const char *prefix, char **results, i
 }
 
 
+void auto_complete_preprocessor(struct Node *root) 
+{
+    char prefix[100];
+    char **results = NULL;
+    int result_count = 0;
+
+    // Get the prefix from the user
+    printf("Enter the prefix to search: ");
+    scanf("%s", prefix);
+
+    // Call the autoCompleteBKTree function
+    autoCompleteBKTree(root, prefix, &results, &result_count);
+
+    // Print the suggested words
+    if (result_count == 0) {
+        printf("No words found with the prefix '%s'.\n", prefix);
+    } else 
+    {
+        printf("Words with prefix '%s':\n", prefix);
+        for (int i = 0; i < result_count; i++) 
+        {
+            printf("  %s\n", results[i]);
+            free(results[i]);  // Free each word after use
+        }
+    }
+}
+
+
 
 
 
 
 int main() {
-    // struct Node *root = createBKTree("hello");
-    // insertNode(root, "world");
-    // insertNode(root, "hell");
-    // insertNode(root, "help");
-    // insertNode(root, "jello");
-    // insertNode(root, "jelly");
-    // insertNode(root, "jellybean");
-    // insertNode(root, "jellybeans");
-    // insertNode(root, "jellyfish");
-    // insertNode(root, "jellyfishes");
-    // insertNode(root, "jellyfisher");
-    // insertNode(root, "holla");
-    // insertNode(root, "hella");
-    // insertNode(root, "helmet");
-    // insertNode(root, "hero");
-    // insertNode(root, "herald");
-    // insertNode(root, "herb");
 
     struct Node *root = dic_loader("dictionary.txt");
     
@@ -181,16 +193,6 @@ int main() {
 
     search_preprocessor(root);
 
-
-    char *results[100];
-    int result_count = 0;
-
-    autoCompleteBKTree(root, "jo", results, &result_count);
-
-    printf("Words with prefix '':\n");
-    for (int i = 0; i < result_count; i++) 
-    {
-        printf("  %s\n", results[i]);
-    }   
+    auto_complete_preprocessor(root);
 
 }
