@@ -881,6 +881,10 @@ hilarious
 hint
 hip
 historian
+hold
+holder
+hole
+homosexual
 homeland
 homeless
 honesty
@@ -889,6 +893,7 @@ hopeful
 hopefully
 horizon
 horn
+horny
 hostage
 hostile
 hostility
@@ -1400,6 +1405,7 @@ productive
 productivity
 profitable
 profound
+program
 programming
 progressive
 prohibit
