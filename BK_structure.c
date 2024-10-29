@@ -84,7 +84,8 @@ void searchBKTree(struct Node *root, char *word, int tolerance, char ***results,
     int distance = UK_lev_dist(root->word, word);
     if (distance <= tolerance) {
         int index = distance;  // Index based on Levenshtein distance
-        if (result_count[index] < 15) {  // Assuming max 15 results per distance
+        if (result_count[index] < 15) 
+        {  // Assuming max 15 results per distance
             results[index][result_count[index]] = root->word;
             result_count[index]++;
         }
@@ -133,6 +134,19 @@ void search_preprocessor(struct Node *root) {
     // Free memory even if no results are found
     for (int k = 0; k < 15; k++) {
         free(results[k]);
+    }
+
+    //ask to insert the word in the dictionary
+    printf("Do you want to insert the word in the dictionary? (y/n): ");
+    char choice;
+    scanf(" %c", &choice);
+    if (choice == 'y') {
+        insertNode(root, word);
+        //open the txt file and insert the word in the dictionary in new line
+        FILE *fp = fopen("dictionary.txt", "a");
+        fprintf(fp, "%s\n", word);
+        fclose(fp);
+        printf("Word inserted successfully.\n");
     }
 }
 
