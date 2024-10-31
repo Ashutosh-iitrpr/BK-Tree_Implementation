@@ -45,7 +45,7 @@ struct Node* createBKTree(float longitude, float latitude, char *name)
  
 
 //function to calculate haversine distance
-int heversine_distance(float lon1, float lat1, float lon2, float lat2)
+int haversine_distance(float lon1, float lat1, float lon2, float lat2)
 {
     float dLat = (lat2 - lat1) * M_PI / 180.0;
     float dLon = (lon2 - lon1) * M_PI / 180.0;
@@ -64,7 +64,7 @@ void insertNode(struct Node *root, float longitude, float latitude, char *name)
     int distance = 0;
     while(currentNode != NULL)
     {
-        distance = heversine_distance(currentNode->longitude, currentNode->latitude, longitude, latitude);
+        distance = haversine_distance(currentNode->longitude, currentNode->latitude, longitude, latitude);
         if(currentNode->children[distance/15] == NULL)
         {
             currentNode->children[distance/15] = createNode(longitude, latitude, name);
@@ -87,12 +87,100 @@ void depth_traverse(struct Node *root)
     {
         depth_traverse(root->children[i]);
     }
-    printf("%s\n", root->name);
+    printf("Hospital %s\n", root->name);
+    
 }
+
+int is_valid_coordinate(char *str, float *coordinate) {
+    char *end;
+    double value = strtod(str, &end);
+    if (end == str || *end != '\0' || value == 0.0) {
+        return 0;  // Invalid or zero
+    }
+    *coordinate = (float)value;
+    return 1;
+}
+         
+struct Node** read_csv(const char* filename, int* count) {
+    FILE* file = fopen(filename, "r");
+    if (!file) {
+        perror("Error opening file");
+        return NULL;
+    }
+
+    char line[200];
+    int line_count = 0;
+
+    while (fgets(line, sizeof(line), file)) {
+        line_count++;
+    }
+    line_count--;  // Exclude the header line
+    *count = line_count;
+
+    struct Node** nodes = malloc(line_count * sizeof(struct Node*));
+    if (!nodes) {
+        perror("Memory allocation error");
+        fclose(file);
+        return NULL;
+    }
+
+    rewind(file);  
+    fgets(line, sizeof(line), file);  // Skip the header line
+
+    int index = 0;
+    while (fgets(line, sizeof(line), file)) {
+        char name[100];
+        float latitude, longitude;
+
+        char* first_comma = strchr(line, ',');
+        if (!first_comma) continue;  
+
+        char* rest_of_line = first_comma + 1;
+
+        char* second_comma = strchr(rest_of_line, ',');
+        if (!second_comma) continue;  
+
+        // Extract name
+        size_t name_length = second_comma - rest_of_line;
+        strncpy(name, rest_of_line, name_length);
+        name[name_length] = '\0';  
+
+        if (sscanf(second_comma + 1, "%f,%f", &latitude, &longitude) != 2) {
+            continue; 
+        }
+        if (latitude == 0.0 || longitude == 0.0) {
+            continue;
+        }
+
+        nodes[index++] = createNode(longitude, latitude, name);
+    }
+
+    fclose(file);
+    *count = index;  
+    return nodes;
+}
+
+struct Node* hosp_loader(char* filename) {
+    int count;
+    struct Node** nodes = read_csv(filename, &count);
+    if (!nodes) {
+        return NULL;
+    }
+
+    struct Node* root = nodes[0];
+    for (int i = 1; i < count; i++) {
+        insertNode(root, nodes[i]->longitude, nodes[i]->latitude, nodes[i]->name);
+    }
+
+    free(nodes);
+    return root;
+}
+
 
 int main()
 {
-    
-
+    struct Node *root = hosp_loader("hospital_data.csv");
+    depth_traverse(root);
+    return 0;
 }
 
