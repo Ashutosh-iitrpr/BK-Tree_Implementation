@@ -176,11 +176,66 @@ struct Node* hosp_loader(char* filename) {
     return root;
 }
 
+void searchBKTree(struct Node *root, float longitude, float latitude, char ***results, int *result_count) {
+    if (root == NULL) return;
+
+    int distance = haversine_distance(root->longitude, root->latitude, longitude, latitude);
+    int index = distance / 15;
+    if (index < 23 && result_count[index] < 23) {
+        results[index][result_count[index]] = strdup(root->name);
+        result_count[index]++;
+    }
+
+    // Recursively call search on the child at index
+    if (index < root->numChildren && root->children[index] != NULL) {
+        searchBKTree(root->children[index], longitude, latitude, results, result_count);
+    }
+}
+
+void search_preprocessor(struct Node* root) {
+    float longitude, latitude;
+    char input[100];
+    char **results[23];
+    int result_count[23] = {0};
+
+    for (int i = 0; i < 23; i++) {
+        results[i] = (char **)malloc(23 * sizeof(char *));
+    }
+
+    printf("Enter the longitude: ");
+    fgets(input, sizeof(input), stdin);
+    sscanf(input, "%f", &longitude);
+
+    printf("Enter the latitude: ");
+    fgets(input, sizeof(input), stdin);
+    sscanf(input, "%f", &latitude);
+
+    searchBKTree(root, longitude, latitude, results, result_count);
+
+    for (int i = 0; i < 23; i++) {
+        if (result_count[i] != 0) {
+            printf("Hospitals found within distance %d-%d km\n", i * 15, (i + 1) * 15);
+            for (int j = 0; j < result_count[i]; j++) {
+                printf("%s\n", results[i][j]);
+                free(results[i][j]);
+            }
+            for (int k = 0; k < 23; k++) {
+                free(results[k]);
+            }
+            return;
+        }
+        free(results[i]);
+    }
+    printf("No hospitals found nearby\n");
+}
+
+
 
 int main()
 {
     struct Node *root = hosp_loader("hospital_data.csv");
     depth_traverse(root);
+    search_preprocessor(root);
     return 0;
 }
 
