@@ -4,7 +4,7 @@ This project implements a dual-function BK Tree (Burkhard-Keller Tree) system. T
 
 2. Project Structure:
 
-bash
+```bash
 /BK-Tree_Implementation
 ├── Hosp_BK_structure.c                 # Defines BK Tree structure and functions for hospital proximity search.
 ├── BK_structure.c                      # Defines BK Tree structure and functions for approximate word matching.
@@ -15,6 +15,7 @@ bash
 ├── dictionary.txt                      # Sample dictionary file for words.
 ├── hospital_data.csv                   # Sample CSV file with hospital names, latitudes, and longitudes.
 └── README.md                           # Documentation file with project details, structure, and usage.
+
 3. File Descriptions:
 
 3.1 Hosp_BK_structure.c: Contains the BK Tree structure and functions for managing hospital data. Key functions include:
