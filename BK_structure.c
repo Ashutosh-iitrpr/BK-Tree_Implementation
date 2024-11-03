@@ -205,8 +205,24 @@ int main() {
     
     //depth_traverse(root);
 
-    search_preprocessor(root);
-
-    auto_complete_preprocessor(root);
+    //ask user whether to search or use auto complete using a swith case based on choice also give choice to exit and repaeat this untill user wants to exit
+    char choice;
+    do
+    {
+        printf("Enter s to search a word, a to auto complete, e to exit: ");
+        scanf("%c", &choice);
+        switch (choice)
+        {
+        case 's':
+            search_preprocessor(root);
+            break;
+        case 'a':
+            auto_complete_preprocessor(root);
+            break;
+        case 'e':
+            printf("Exiting...\n");
+            break;
+        }
+    } while (choice != 'e');
 
 }
