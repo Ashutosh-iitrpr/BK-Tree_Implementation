@@ -194,7 +194,6 @@ void searchBKTree(struct Node *root, float longitude, float latitude, char ***re
 
 void search_preprocessor(struct Node* root) {
     float longitude, latitude;
-    char input[100];
     char **results[23];
     int result_count[23] = {0};
 
@@ -203,12 +202,10 @@ void search_preprocessor(struct Node* root) {
     }
 
     printf("Enter the longitude: ");
-    fgets(input, sizeof(input), stdin);
-    sscanf(input, "%f", &longitude);
+    scanf("%f", &longitude);
 
     printf("Enter the latitude: ");
-    fgets(input, sizeof(input), stdin);
-    sscanf(input, "%f", &latitude);
+    scanf("%f", &latitude);
 
     searchBKTree(root, longitude, latitude, results, result_count);
 
@@ -234,8 +231,21 @@ void search_preprocessor(struct Node* root) {
 int main()
 {
     struct Node *root = hosp_loader("hospital_data.csv");
-    depth_traverse(root);
-    search_preprocessor(root);
+    //depth_traverse(root);
+    char choice;
+    do
+    {
+        printf("Enter s to search a hospital, e to exit: ");
+        scanf("%c", &choice);
+        switch (choice)
+        {
+        case 's':
+            search_preprocessor(root);
+            break;
+        case 'e':
+            break;
+        }
+    } while (choice != 'e');
     return 0;
 }
 
